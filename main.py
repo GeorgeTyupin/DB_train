@@ -35,7 +35,7 @@ def index():
 @app.route("/reg" ,  methods = ['GET' , 'POST']):
 def reg():
     if request.method == 'GET':
-        return render_template('main.html' , data = session)
+        return render_template('main.html')
     if request.method == 'POST':
         pass
 

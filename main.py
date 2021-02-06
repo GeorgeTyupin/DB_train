@@ -46,18 +46,30 @@ def reg():
 
         if result:
             return "Такой пользователь уже существует"
+            
         login = request.form.get('login')
         password = request.form.get('password')
         color = request.form.get('color')
 
+        with sqlite3.connect("computer_shop.db") as cur:
+            sql = f"""INSERT INTO Users ('Mail' , 'Login' , 'Password' , 'color') 
+            VALUES ('{mail}','{login}','{password}','{color}')"""
+            cur.execute(sql)
+            cur.commit()
 
-        # добавить в бд
+        with sqlite3.connect("computer_shop.db") as cur:
+            sql = f"SELECT ID FROM Users WHERE Mail = '{mail}'"
+            result = cur.execute(sql).fetchone()
         
-        # """
-        # INSERT INTO
-        # """
-        #
-        # записать данные в session и сделать redirect на main
+        session['login'] = login
+        session['id'] = result[0]
+        session['color'] = color
+        session['auth'] = True
+
+        response = make_response(redirect(f"/main"))
+        return response
+        
+        
 
 
 @app.route("/main" ,  methods = ['GET' , 'POST'])

@@ -12,9 +12,19 @@
         body{
             background-color: {{data['color']}};
         }
+        .user{
+            color: black;
+            padding: 1rem;
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
     <h1>Привет {{data['login']}}</h1>
+    <ul>
+        {% for i in users %}
+        <li><div class='user'>{{i}}</div></li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

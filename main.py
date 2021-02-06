@@ -32,6 +32,7 @@ def index():
             else:
                 return render_template('auth.html')
         return "123"
+
 @app.route("/reg" ,  methods = ['GET' , 'POST'])
 def reg():
     if request.method == 'GET':
@@ -46,7 +47,7 @@ def reg():
 
         if result:
             return "Такой пользователь уже существует"
-            
+
         login = request.form.get('login')
         password = request.form.get('password')
         color = request.form.get('color')
@@ -68,13 +69,17 @@ def reg():
 
         response = make_response(redirect(f"/main"))
         return response
-        
-        
-
 
 @app.route("/main" ,  methods = ['GET' , 'POST'])
 def main():
     if request.method == 'GET':
-        return render_template('main.html' , data = session)
+        with sqlite3.connect("computer_shop.db") as cur:
+            sql = "SELECT LOGIN FROM Users"
+            result = cur.execute(sql).fetchall()
+        users_login = []
+        for i in result:
+            users_login.append(i[0])
+
+        return render_template('main.html' , data = session , users = users_login)
 
 app.run(debug=True)

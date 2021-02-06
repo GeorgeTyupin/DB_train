@@ -29,15 +29,19 @@ def index():
 
                 response = make_response(redirect(f"/main"))
                 return response
-
-                # регистрацию
             else:
                 return render_template('auth.html')
         return "123"
+@app.route("/reg" ,  methods = ['GET' , 'POST']):
+    if request.method == 'GET':
+        return render_template('main.html' , data = session)
+    if request.method == 'POST':
+        pass
+
 
 @app.route("/main" ,  methods = ['GET' , 'POST'])
 def main():
     if request.method == 'GET':
-        return render_template('main.html' , data = session)
+        return render_template('reg.html')
 
 app.run(debug=True)

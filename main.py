@@ -1,15 +1,43 @@
 import sqlite3
- 
-db = sqlite3.connect("computer_shop.db")
-cur = db.cursor()
+from flask import Flask , render_template , make_response , request , session , redirect
 
-#sql = "SELECT * FROM Comps"
-#print(cur.execute(sql).fetchall())
+app = Flask(__name__)
+app.config['SECRET_KEY'] = "2af888e0942c476c4eaeab2880a9e3d3a1426acb86730c1bd60b6d339f2256b2"
 
-sql = '''
-INSERT INTO Comps
-(Model , Processor , Price , Count)
-VALUES ("Asus" , "i5" , 74000 , 15 )
-'''
-cur.execute(sql)
-db.commit()
+
+@app.route("/" , methods = ['GET' , 'POST'])
+def index():
+    if request.method == 'GET':
+        if 'auth' in session and session['auth']:
+            return f"<h1>Привет {session['login']}"
+        else:
+            return render_template('auth.html')
+    else:
+        mail = request.form.get('login')
+        password = request.form.get('pass')
+
+        with sqlite3.connect("computer_shop.db") as cur:
+            sql = f"SELECT * FROM Users WHERE Mail = '{mail}' "
+            print(sql)
+            result = cur.execute(sql).fetchone()
+            if (result and result[3] == password):
+
+                session['login'] = result[1]
+                session['id'] = result[0]
+                session['color'] = result[4]
+                session['auth'] = True
+
+                response = make_response(redirect(f"/main"))
+                return response
+
+                # регистрацию
+            else:
+                return render_template('auth.html')
+        return "123"
+
+@app.route("/main" ,  methods = ['GET' , 'POST'])
+def main():
+    if request.method == 'GET':
+        return render_template('main.html' , data = session)
+
+app.run(debug=True)

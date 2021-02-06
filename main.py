@@ -32,17 +32,37 @@ def index():
             else:
                 return render_template('auth.html')
         return "123"
-@app.route("/reg" ,  methods = ['GET' , 'POST']):
+@app.route("/reg" ,  methods = ['GET' , 'POST'])
 def reg():
     if request.method == 'GET':
-        return render_template('main.html')
+        return render_template('reg.html')
+
     if request.method == 'POST':
-        pass
+        mail = request.form.get('mail')
+        with sqlite3.connect("computer_shop.db") as cur:
+            sql = f"SELECT * FROM Users WHERE Mail = '{mail}'"
+            print(sql)
+            result = cur.execute(sql).fetchone()
+
+        if result:
+            return "Такой пользователь уже существует"
+        login = request.form.get('login')
+        password = request.form.get('password')
+        color = request.form.get('color')
+
+
+        # добавить в бд
+        
+        # """
+        # INSERT INTO
+        # """
+        #
+        # записать данные в session и сделать redirect на main
 
 
 @app.route("/main" ,  methods = ['GET' , 'POST'])
 def main():
     if request.method == 'GET':
-        return render_template('reg.html')
+        return render_template('main.html' , data = session)
 
 app.run(debug=True)

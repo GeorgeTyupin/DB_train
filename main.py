@@ -33,6 +33,7 @@ def index():
                 return render_template('auth.html')
         return "123"
 @app.route("/reg" ,  methods = ['GET' , 'POST']):
+def reg():
     if request.method == 'GET':
         return render_template('main.html' , data = session)
     if request.method == 'POST':
